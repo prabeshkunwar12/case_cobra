@@ -37,6 +37,22 @@ const DesignConfigurator = ({configId, imageUrl, imageDimensions} : DesignConfig
         finishes: FINISHES.options[0],
     })
 
+    const [renderedDimension, setRenderedDimension] = useState<{
+        width: number
+        height: number
+    }>({
+        width: imageDimensions.width / 4,
+        height: imageDimensions.height / 4,
+    })
+
+    const [renderedPosition, setRenderedPosition] = useState<{
+        x: number
+        y: number
+    }>({
+        x: 150,
+        y: 205,
+    })
+ 
     return (
         <div className="relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20">
             <div className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
@@ -72,6 +88,21 @@ const DesignConfigurator = ({configId, imageUrl, imageDimensions} : DesignConfig
                         topRight: <HandleComponent />,
                         topLeft: <HandleComponent />,
                     }}
+
+                    onResizeStop={(_, __, ref, ___, {x, y}) => {
+                        setRenderedDimension({
+                            //height: 20px and slice px
+                            height: parseInt(ref.style.height.slice(0, -2)),
+                            width: parseInt(ref.style.width.slice(0, -2))
+                        })
+                        setRenderedPosition({x, y})
+                    }}
+
+                    onDragStop={(_, data)=>{
+                        const {x, y} = data
+                        setRenderedPosition({x, y})
+                    }}
+
                     className="absolute z-20 border-[3px] border-primary"
                 >
                     <div className="relative w-full h-full">
