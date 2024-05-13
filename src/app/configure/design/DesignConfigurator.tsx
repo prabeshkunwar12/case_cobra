@@ -26,7 +26,11 @@ interface DesignConfiguratorProps {
     }
 }
 
-const DesignConfigurator = ({configId, imageUrl, imageDimensions} : DesignConfiguratorProps) => {
+const DesignConfigurator = ({
+    configId, 
+    imageUrl, 
+    imageDimensions
+} : DesignConfiguratorProps) => {
     const { toast } = useToast()
 
     const [options, setOptions] = useState<{
