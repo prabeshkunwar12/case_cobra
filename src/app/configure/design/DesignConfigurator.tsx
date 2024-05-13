@@ -16,6 +16,9 @@ import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 import { BASE_PRICE } from "@/config/product";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { saveConfig as _saveConfig, saveConfigArgs } from "./actions";
+import { useRouter } from "next/navigation";
 
 interface DesignConfiguratorProps {
     configId: string
@@ -32,6 +35,24 @@ const DesignConfigurator = ({
     imageDimensions
 } : DesignConfiguratorProps) => {
     const { toast } = useToast()
+    const router = useRouter()
+
+    const { mutate:saveConfig } = useMutation({
+        mutationKey: ["save-config"],
+        mutationFn: async (args: saveConfigArgs) => {
+            await Promise.all([saveConfiguration(), _saveConfig(args)])
+        },
+        onError: () => {
+            toast({
+                title: "Something went worng",
+                description: "Ther was an error on our end. Please Try Again",
+                variant: "destructive"
+            })
+        },
+        onSuccess: () => {
+            router.push(`/configure/preview?id=${configId}`)
+        }
+    })
 
     const [options, setOptions] = useState<{
         color: (typeof COLORS)[number]
@@ -353,7 +374,13 @@ const DesignConfigurator = ({
                                 }
                             </p>
                             <Button
-                                onClick={saveConfiguration}
+                                onClick={() => saveConfig({
+                                    configId,
+                                    color: options.color.value,
+                                    material: options.materials.value,
+                                    finish: options.finishes.value,
+                                    model: options.model.value,
+                                })}
                                 size='sm' 
                                 className="w-full"   
                             >

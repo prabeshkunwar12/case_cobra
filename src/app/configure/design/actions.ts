@@ -3,19 +3,21 @@
 import { db } from '@/db'
 import { CaseColor, CaseFinish, CaseMaterial, PhoneModel } from '@prisma/client'
 
+export type saveConfigArgs = {
+    color: CaseColor
+    finish: CaseFinish
+    material: CaseMaterial
+    model: PhoneModel
+    configId: string
+}
+
 export const saveConfig = async ({ 
     color, 
     finish, 
     material, 
     model, 
     configId 
-}:{
-    color: CaseColor
-    finish: CaseFinish
-    material: CaseMaterial
-    model: PhoneModel
-    configId: string
-}) => {
+}:saveConfigArgs) => {
     await db.configuration.update({
         where: {
             id: configId
