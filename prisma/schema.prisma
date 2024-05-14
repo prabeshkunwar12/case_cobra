@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id    String  @id @default(cuid())
+  email String
+  order Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Configuration {
   id              String        @id @default(cuid())
   width           Int
@@ -17,12 +26,7 @@ model Configuration {
   material        CaseMaterial?
   finish          CaseFinish?
   croppedImageUrl String?
-}
-
-enum OrderStatus {
-  fulfilled
-  shipped
-  awaiting_shipment
+  order           Order[]
 }
 
 enum CaseColor {
@@ -48,4 +52,52 @@ enum CaseMaterial {
 enum CaseFinish {
   smooth
   textured
+}
+
+enum OrderStatus {
+  fulfilled
+  shipped
+  awaiting_shipment
+}
+
+model ShippingAddress {
+  id          String  @id @default(cuid())
+  name        String
+  street      String
+  city        String
+  postalCode  String
+  country     String
+  state       String?
+  phoneNumber String?
+  orders      Order[]
+}
+
+model BillingAddress {
+  id          String  @id @default(cuid())
+  name        String
+  street      String
+  city        String
+  postalCode  String
+  country     String
+  state       String?
+  phoneNumber String?
+  orders      Order[]
+}
+
+model Order {
+  id                String           @id @default(cuid())
+  configurationId   String
+  configuration     Configuration    @relation(fields: [configurationId], references: [id])
+  userId            String
+  user              User             @relation(fields: [userId], references: [id])
+  amount            Float
+  isPaid            Boolean          @default(false)
+  status            OrderStatus      @default(awaiting_shipment)
+  shippingAddressId String?
+  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  billingAddressId  String?
+  billingAddress    BillingAddress?  @relation(fields: [billingAddressId], references: [id])
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }
