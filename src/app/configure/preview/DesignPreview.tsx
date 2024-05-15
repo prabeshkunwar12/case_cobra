@@ -13,18 +13,34 @@ import Confetti from 'react-dom-confetti'
 import { createCheckoutSesion } from './actions'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import LoginModel from '@/components/LoginModel'
 
 const DesignPreview = ({configuration}:{configuration: Configuration}) => {
 
-    const [showConfetti, setShowConfetti] = useState(false)
+    const [showConfetti, setShowConfetti] = useState<boolean>(false)
+    const [isLoginModelOpen, setIsLoginModelOpen] = useState<boolean>(false)
     const { color, model, finish, material } = configuration
     const tw = COLORS.find((supportedColor) => supportedColor.value === color)?.tw
     const { label: modelLabel } = MODELS.options.find((supportedModel) => supportedModel.value === model)!
+
+    const { user } = useKindeBrowserClient()
 
     const router = useRouter()
     const { toast } = useToast()
 
     useEffect(() => setShowConfetti(true), [])
+
+    const handleCheckout = () => {
+        if(user) {
+            //create the payment session
+            createPaymentSession({ configId: configuration.id })
+        } else {
+            //need to login
+            localStorage.setItem("configurationId", configuration.id)
+            setIsLoginModelOpen(true)
+        }
+    }
 
     const { mutate:createPaymentSession } = useMutation({
         mutationKey: ["get-checkout-session"],
@@ -54,6 +70,9 @@ const DesignPreview = ({configuration}:{configuration: Configuration}) => {
                     config={{ elementCount: 200, spread: 90 }} 
                 />
             </div>
+
+            <LoginModel isOpen={isLoginModelOpen} setIsOpen={setIsLoginModelOpen} />
+            
             <div className='mt-20 text-sm grid grid-cols-1 sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:gap-x-8 lg:gap-x-12'>
                 <div className='sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2'>
                     <Phone 
@@ -133,7 +152,7 @@ const DesignPreview = ({configuration}:{configuration: Configuration}) => {
                         <div className='mt-8 flex justify-end pb-12'>
                             <Button
                                 className='px-4 sm:px-6 md:px-8'
-                                onClick={() => createPaymentSession({ configId:configuration.id })}
+                                onClick={() => handleCheckout()}
                             >
                                 Check Out 
                                 <ArrowRight className='h-4 w-4 ml-1.5 inline' />
