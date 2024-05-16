@@ -42,7 +42,7 @@ const OrderReveivedEmail = ({
                         <Text style={adressTitle}>
                             Shipping to: {shippingAddress.name}
                         </Text>
-                        <Text style={{ ...global.text, fontSize:40 }}>
+                        <Text style={{ ...global.text, fontSize:14 }}>
                             {shippingAddress.street},  {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postalCode}
                         </Text>
                     </Section>
@@ -64,7 +64,7 @@ const OrderReveivedEmail = ({
                                     {orderId}
                                 </Text>
                             </Column>
-                            <Column>
+                            <Column style={{ marginLeft:20 }}>
                                 <Text style={global.paragraphWithBold}>
                                     Order Date
                                 </Text>

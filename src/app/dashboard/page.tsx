@@ -76,9 +76,8 @@ const page = async () => {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-sm text-muted-foreground">
-                                    of {formatPrice(WEEKLY_GOAL, "USD")}
-                                </div> {' '}
-                                goal
+                                    of {formatPrice(WEEKLY_GOAL, "USD")} {' '} goal
+                                </div>
                             </CardContent>
                             <CardFooter>
                                 <Progress value={((lastWeekSum._sum.amount ?? 0)/WEEKLY_GOAL) * 100} />
@@ -95,9 +94,8 @@ const page = async () => {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-sm text-muted-foreground">
-                                    of {formatPrice(MONTHLY_GOAL, "USD")}
-                                </div> {' '}
-                                goal
+                                    of {formatPrice(MONTHLY_GOAL, "USD")} {' '} goal
+                                </div> 
                             </CardContent>
                             <CardFooter>
                                 <Progress value={((lastMonthSum._sum.amount ?? 0)/MONTHLY_GOAL) * 100} />
