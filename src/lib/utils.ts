@@ -41,6 +41,7 @@ export const constructMetadata = ({
 			images: [image],
 			creator: "@prabeshkunwar12"
 		},
-		icons
+		icons,
+		metadataBase: new URL('https://case-cobra-henna.vercel.app/')
 	}
 }
